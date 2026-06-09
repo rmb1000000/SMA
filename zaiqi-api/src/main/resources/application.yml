@@ -62,3 +62,13 @@ jwt:
   secret: zaiqi-jwt-secret-key-must-be-at-least-256-bits-long-for-hmac-sha
   access-token-expiration: 86400000
   refresh-token-expiration: 2592000000
+
+wx:
+  pay:
+    app-id: ${WX_APP_ID:wx-mock-appid}
+    mch-id: ${WX_MCH_ID:1234567890}
+    api-v3-key: ${WX_API_V3_KEY:mock-v3-key-must-be-32-chars-long}
+    private-key-path: ${WX_PRIVATE_KEY_PATH:/data/certs/apiclient_key.pem}
+    serial-no: ${WX_SERIAL_NO:mock-serial-no}
+    notify-url: https://api.zaiqi.com/api/pay/notify
+    refund-notify-url: https://api.zaiqi.com/api/pay/refund-notify
