@@ -6,7 +6,7 @@
 
 **Architecture:** 采用 Spring Boot 3.2 单体应用，MyBatis-Plus 注解驱动 ORM，JWT 无状态认证，Redis 管理 refresh_token 和在线状态。前后端分离，管理后台独立部署。
 
-**Tech Stack:** Java 21, Spring Boot 3.2.5, MyBatis-Plus 3.5.7, MySQL 8.0, Redis 7.x, JWT (jjwt 0.12.5), Hutool 5.8.25, Fastjson2 2.0.50, SpringDoc OpenAPI 2.3.0
+**Tech Stack:** Java 21, Spring Boot 3.2.5, MyBatis-Plus 3.5.7, MySQL 8.0, Redis 7.x, JWT (jjwt 0.12.5), Hutool 5.8.25, Fastjson2 2.0.50, SpringDoc OpenAPI 2.3.0, RabbitMQ 3.x, Spring WebSocket 3.2.x, MinIO (SDK), Spring WebFlux (WebClient for DeepSeek API)
 
 ---
 
@@ -31,7 +31,10 @@ zaiqi-api/
 │   │   ├── WebMvcConfig.java
 │   │   ├── MyBatisPlusConfig.java
 │   │   ├── MyMetaObjectHandler.java
-│   │   └── OpenApiConfig.java
+│   │   ├── OpenApiConfig.java
+│   │   ├── WebSocketConfig.java        # WebSocket 配置（S4 聊天用）
+│   │   ├── MinioConfig.java            # MinIO 文件存储配置
+│   │   └── RabbitConfig.java           # RabbitMQ 配置（异步任务）
 │   ├── common/
 │   │   ├── BaseEntity.java
 │   │   ├── Result.java
@@ -243,6 +246,31 @@ zaiqi-api/
             <version>${fastjson2.version}</version>
         </dependency>
 
+        <!-- WebSocket（S4 聊天用） -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+
+        <!-- WebFlux（DeepSeek API 异步调用用） -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+        </dependency>
+
+        <!-- RabbitMQ（异步任务/通知用） -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+        </dependency>
+
+        <!-- MinIO（文件存储） -->
+        <dependency>
+            <groupId>io.minio</groupId>
+            <artifactId>minio</artifactId>
+            <version>8.5.10</version>
+        </dependency>
+
         <!-- SpringDoc OpenAPI -->
         <dependency>
             <groupId>org.springdoc</groupId>
@@ -317,6 +345,23 @@ spring:
           max-active: 16
           max-idle: 8
           min-idle: 4
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
+
+minio:
+  endpoint: http://localhost:9000
+  access-key: minioadmin
+  secret-key: minioadmin
+  bucket: zaiqi-files
+
+deepseek:
+  api-key: ${DEEPSEEK_API_KEY:sk-mock-key}
+  api-url: https://api.deepseek.com/v1/chat/completions
+  model: deepseek-chat
 
 mybatis-plus:
   global-config:
