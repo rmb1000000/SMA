@@ -40,7 +40,7 @@ public class OrderServiceImpl implements OrderService {
     public CreateOrderResponse createOrder(Long userId, CreateOrderRequest request) {
         Object[] product = PRODUCTS.get(request.getProductType());
         if (product == null) {
-            throw new BusinessException(ErrorCode.BAD_REQUEST);
+            throw new BusinessException(ErrorCode.BAD_REQUEST.getCode(), "无效的商品类型");
         }
 
         String productName = (String) product[0];
