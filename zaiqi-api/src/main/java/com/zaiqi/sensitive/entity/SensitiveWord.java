@@ -1,16 +1,17 @@
 package com.zaiqi.sensitive.entity;
 
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.zaiqi.common.BaseEntity;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
+import java.time.LocalDateTime;
 
 @Data
-@EqualsAndHashCode(callSuper = true)
 @TableName("zq_sensitive_word")
-public class SensitiveWord extends BaseEntity {
+public class SensitiveWord {
+    @TableId(type = IdType.ASSIGN_ID)
+    private Long id;
     private String word;
     private Integer level;
     private String scope;
     private Integer status;
+    private LocalDateTime createTime;
 }
