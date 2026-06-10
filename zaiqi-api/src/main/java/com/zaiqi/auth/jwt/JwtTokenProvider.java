@@ -53,6 +53,10 @@ public class JwtTokenProvider {
         return parseToken(token) != null;
     }
 
+    public Claims getClaims(String token) {
+        return parseToken(token);
+    }
+
     private Claims parseToken(String token) {
         try {
             return Jwts.parser()

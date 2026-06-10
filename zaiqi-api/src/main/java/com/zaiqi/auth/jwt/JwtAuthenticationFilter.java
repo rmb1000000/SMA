@@ -3,6 +3,7 @@ package com.zaiqi.auth.jwt;
 import com.zaiqi.common.ErrorCode;
 import com.zaiqi.common.Result;
 import com.alibaba.fastjson2.JSON;
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -54,16 +55,26 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             writeUnauthorized(response, ErrorCode.TOKEN_INVALID);
             return;
         }
-        Long userId = jwtTokenProvider.getUserIdFromToken(token);
-        if (userId == null) {
+        Claims claims = jwtTokenProvider.getClaims(token);
+        if (claims == null) {
             writeUnauthorized(response, ErrorCode.TOKEN_INVALID);
             return;
         }
-        redisTemplate.opsForValue().set("online:user:" + userId, "online", 5, TimeUnit.MINUTES);
-        UsernamePasswordAuthenticationToken auth =
-                new UsernamePasswordAuthenticationToken(userId, null,
-                        Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")));
-        SecurityContextHolder.getContext().setAuthentication(auth);
+        Long userId = Long.parseLong(claims.getSubject());
+        String role = claims.get("role", String.class);
+        if ("ADMIN".equals(role)) {
+            redisTemplate.opsForValue().set("online:user:" + userId, "online", 5, TimeUnit.MINUTES);
+            UsernamePasswordAuthenticationToken auth =
+                    new UsernamePasswordAuthenticationToken(userId, null,
+                            Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN")));
+            SecurityContextHolder.getContext().setAuthentication(auth);
+        } else {
+            redisTemplate.opsForValue().set("online:user:" + userId, "online", 5, TimeUnit.MINUTES);
+            UsernamePasswordAuthenticationToken auth =
+                    new UsernamePasswordAuthenticationToken(userId, null,
+                            Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")));
+            SecurityContextHolder.getContext().setAuthentication(auth);
+        }
         filterChain.doFilter(request, response);
     }
 
