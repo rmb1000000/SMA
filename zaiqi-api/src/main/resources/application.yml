@@ -34,7 +34,7 @@ minio:
   endpoint: http://localhost:9000
   access-key: minioadmin
   secret-key: minioadmin
-  bucket: zaiqi-files
+  bucket: sma-images
 
 deepseek:
   api-key: ${DEEPSEEK_API_KEY:sk-mock-key}
@@ -65,10 +65,10 @@ jwt:
 
 wx:
   pay:
-    app-id: ${WX_APP_ID:wx-mock-appid}
+    app-id: ${WX_APP_ID:wx0353df93a9194784}
     mch-id: ${WX_MCH_ID:1234567890}
     api-v3-key: ${WX_API_V3_KEY:mock-v3-key-must-be-32-chars-long}
-    private-key-path: ${WX_PRIVATE_KEY_PATH:/data/certs/apiclient_key.pem}
+    private-key-path: ${WX_PRIVATE_KEY_PATH:/data/certs/private.wx0353df93a9194784.key}
     serial-no: ${WX_SERIAL_NO:mock-serial-no}
     notify-url: https://api.zaiqi.com/api/pay/notify
     refund-notify-url: https://api.zaiqi.com/api/pay/refund-notify
